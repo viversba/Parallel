@@ -48,7 +48,7 @@ int main(int argc, char** argv)
     }
     imwrite("/Users/nicolasviveros/Desktop/testbw.jpg",image);
     
-    //Estas dos lineas son el código para mostrar la imagen en la ventana y cerrar la ventana al presionar culquier tecla
+//Estas dos lineas son el código para mostrar la imagen en la ventana y cerrar la ventana al presionar culquier tecla
 //    imshow(windowName, image); // Show our image inside the created window.
 //    waitKey(0); // Wait for any keystroke in the window
 //    destroyWindow(windowName); //destroy the created window
