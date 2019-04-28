@@ -103,7 +103,7 @@ int main( int argc, char** argv )
   
   imshow( window_name, dst );
   tmp = dst;
-/*
+
 
   /// Loop
   while( true )
@@ -137,12 +137,19 @@ int main( int argc, char** argv )
 #include <assert.h>
 #include <cmath>
 #include <png++/png.hpp>
+#include <pthread.h>
+
+#define NUM_THREADS 4
 
 using namespace std;
 
 typedef vector<double> Array;
 typedef vector<Array> Matrix;
 typedef vector<Matrix> Image;
+
+Matrix filter;
+Image image;
+Image newImage;
 
 //calcular el número gaussiano para multiplicar por la matriz de pixeles "kernel"
 
@@ -210,6 +217,7 @@ void saveImage(Image &image, const char *filename)
 
 //función aplicar filtro blur
 Image applyFilter(Image &image, Matrix &filter){
+    
     assert(image.size()==3 && filter.size()!=0);
 
     int height = image[0].size();
@@ -248,16 +256,87 @@ Image applyFilter(Image &image, Matrix &filter, int times)
     return newImage;
 }
 
+void *thread_function(void *ap){
+    
+    assert(image.size()==3 && filter.size()!=0);
+    long thread_id = (long)ap;
+    
+    int height = image[0].size();
+    int width = image[0][0].size();
+    int filterHeight = filter.size();
+    int filterWidth = filter[0].size();
+    int newImageHeight = height-filterHeight+1;
+    int newImageWidth = width-filterWidth+1;
+    int d,i,j,h,w;
+    
+    int from = (newImageHeight / NUM_THREADS)*thread_id;
+    int to = thread_id != NUM_THREADS-1 ? from + (newImageHeight / NUM_THREADS) : newImageHeight;
+    
+//    cout << "Hello world! from thread " << thread_id << endl;
+//    cout << image[0].size() << " x " << image[0][0].size() << endl;
+//    cout << "I go from " << from << " to " << to << endl;
+    
+    for (d=0 ; d<3 ; d++) {
+        for (i=from ; i<to ; i++) {
+            for (j=0 ; j<newImageWidth ; j++) {
+                for (h=i ; h<i+filterHeight ; h++) {
+                    for (w=j ; w<j+filterWidth ; w++) {
+                        newImage[d][i][j] += filter[h-i][w-j]*image[d][h][w];
+                    }
+                }
+            }
+        }
+    }
 
+    pthread_exit(NULL);
+}
 
 int main()
 {
-    Matrix filter = getGaussian(5, 5, 10.0);
+    filter = getGaussian(30, 30, 10.0);
+    int numthreads;
 
     cout << "Loading image..." << endl;
-    Image image = loadImage("/home/brehynnermraz/Documentos/PARALELA/Parallel/Parallel/input.jpeg");
+    image = loadImage("/Users/nicolasviveros/Documents/Parallel/Parallel/input.jpeg");
+    if(image[0].size() < NUM_THREADS || image[0][0].size() < NUM_THREADS){
+        cout << "The size of the image is less than the number of threads you are trying to use\nOnly 1 thread will be used";
+        numthreads = 1;
+    }
+    else{
+        numthreads = NUM_THREADS;
+    }
+    
+    newImage = Image(3, Matrix(image[0].size() - filter.size() + 1, Array(image[0][0].size() - filter[0].size() + 1)));
+    
+    cout << "Creathing threads..." << endl;
     cout << "Applying filter..." << endl;
-    Image newImage = applyFilter(image, filter);
+    int args[numthreads];
+    pthread_t hilo[numthreads];
+    int i,r,*rv;
+    
+    //thread creation
+    for (i = 0; i < numthreads; i++)
+    {
+        args[i] = i;
+        r = pthread_create(&hilo[i], NULL, thread_function, (void *)i);
+        if (r != 0)
+        {
+            perror("can't create thread");
+            exit(-1);
+        }
+    }
+    
+    //thread opening
+    for (i = 0; i < numthreads; i++)
+    {
+        r = pthread_join(hilo[i], (void **)&rv);
+        if (r != 0)
+        {
+            perror("can't join thread");
+            exit(-1);
+        }
+    }
+    
     cout << "Saving image..." << endl;
     saveImage(newImage, "newImage.png");
     cout << "Done!" << endl;
