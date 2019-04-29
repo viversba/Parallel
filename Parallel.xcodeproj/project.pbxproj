@@ -235,7 +235,10 @@
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				CODE_SIGN_STYLE = Automatic;
 				"FRAMEWORK_SEARCH_PATHS[arch=*]" = /usr/local/lib/;
-				"HEADER_SEARCH_PATHS[arch=*]" = /usr/local/Cellar/opencv/4.1.0_1/include/opencv4;
+				"HEADER_SEARCH_PATHS[arch=*]" = (
+					/usr/local/Cellar/opencv/4.1.0_1/include/opencv4,
+					/usr/local/include,
+				);
 				"LIBRARY_SEARCH_PATHS[arch=*]" = /usr/local/Cellar/opencv/4.1.0_1/lib;
 				"OTHER_LDFLAGS[arch=*]" = (
 					"-I/usr/local/Cellar/opencv/4.1.0_1/include/opencv4/opencv",
@@ -289,6 +292,10 @@
 					"-lopencv_photo",
 					"-lopencv_imgproc",
 					"-lopencv_core",
+					"-L/opt/local/lib",
+					"-lpng16",
+					"-I/opt/local/include/libpng16\n-L/opt/local/lib",
+					"-lpng16",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
