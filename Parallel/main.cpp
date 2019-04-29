@@ -139,8 +139,6 @@ int main( int argc, char** argv )
 #include <png++/png.hpp>
 #include <pthread.h>
 
-#define NUM_THREADS 4
-
 using namespace std;
 
 typedef vector<double> Array;
@@ -150,6 +148,7 @@ typedef vector<Matrix> Image;
 Matrix filter;
 Image image;
 Image newImage;
+int num_threads;
 
 //calcular el número gaussiano para multiplicar por la matriz de pixeles "kernel"
 
@@ -269,8 +268,10 @@ void *thread_function(void *ap){
     int newImageWidth = width-filterWidth+1;
     int d,i,j,h,w;
     
-    int from = (newImageHeight / NUM_THREADS)*thread_id;
-    int to = thread_id != NUM_THREADS-1 ? from + (newImageHeight / NUM_THREADS) : newImageHeight;
+    int from = (newImageHeight / num_threads)*thread_id;
+    int to = thread_id != num_threads-1 ? from + (newImageHeight / num_threads) : newImageHeight;
+    
+//    cout << "thread " << thread_id << endl;
     
 //    cout << "Hello world! from thread " << thread_id << endl;
 //    cout << image[0].size() << " x " << image[0][0].size() << endl;
@@ -291,31 +292,37 @@ void *thread_function(void *ap){
     pthread_exit(NULL);
 }
 
-int main()
+int main(int argc, char** argv)
 {
-    filter = getGaussian(30, 30, 10.0);
-    int numthreads;
-
+    assert(argc == 5 && "You must specify the input name, output name, number of threads and kernel size as parameters");
+    
+//    printf("argc %d",argc);
+    
+    int kernel;
+    num_threads = atoi(argv[3]);
+    kernel = atoi(argv[4]);
+    
+//    printf("numthreads %d kernel %d",num_threads,kernel);
+    
+    filter = getGaussian(kernel, kernel, 10.0);
     cout << "Loading image..." << endl;
-    image = loadImage("/Users/nicolasviveros/Documents/Parallel/Parallel/input.jpeg");
-    if(image[0].size() < NUM_THREADS || image[0][0].size() < NUM_THREADS){
+    image = loadImage(argv[1]);
+    
+    if(image[0].size() < num_threads || image[0][0].size() < num_threads){
         cout << "The size of the image is less than the number of threads you are trying to use\nOnly 1 thread will be used";
-        numthreads = 1;
-    }
-    else{
-        numthreads = NUM_THREADS;
+        num_threads = 1;
     }
     
     newImage = Image(3, Matrix(image[0].size() - filter.size() + 1, Array(image[0][0].size() - filter[0].size() + 1)));
     
     cout << "Creathing threads..." << endl;
     cout << "Applying filter..." << endl;
-    int args[numthreads];
-    pthread_t hilo[numthreads];
+    int args[num_threads];
+    pthread_t hilo[num_threads];
     int i,r,*rv;
     
     //thread creation
-    for (i = 0; i < numthreads; i++)
+    for (i = 0; i < num_threads; i++)
     {
         args[i] = i;
         r = pthread_create(&hilo[i], NULL, thread_function, (void *)i);
@@ -327,7 +334,7 @@ int main()
     }
     
     //thread opening
-    for (i = 0; i < numthreads; i++)
+    for (i = 0; i < num_threads; i++)
     {
         r = pthread_join(hilo[i], (void **)&rv);
         if (r != 0)
@@ -338,6 +345,8 @@ int main()
     }
     
     cout << "Saving image..." << endl;
-    saveImage(newImage, "newImage.png");
+    saveImage(newImage, argv[2]);
     cout << "Done!" << endl;
 }
+
+//Compilation in mac: g++ -I/opt/local/include/libpng16 -L/opt/local/lib -lpng16 main.cpp -o main
