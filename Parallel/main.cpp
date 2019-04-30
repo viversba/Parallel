@@ -163,8 +163,6 @@ int main(int argc, char** argv)
 {
     assert(argc == 5 && "You must specify the input name, output name, number of threads and kernel size as parameters");
 
-
-    
 //    printf("argc %d",argc);
     
     int kernel;
@@ -217,7 +215,3 @@ int main(int argc, char** argv)
     saveImage(newImage, argv[2]);
     cout << "Done!" << endl;
 }
-
-//Compilation in mac: g++ -I/opt/local/include/libpng16 -L/opt/local/lib -lpng16 main.cpp -o main
-// Ubuntu: g++ -o main  main.o `libpng-config --ldflags` -pthread
-
