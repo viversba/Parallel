@@ -5,6 +5,7 @@
 #include <cmath>
 #include <png++/png.hpp>
 #include <pthread.h>
+#include "omp.h"
 
 using namespace std;
 
@@ -122,58 +123,18 @@ Image applyFilter(Image &image, Matrix &filter, int times)
     return newImage;
 }
 
-void *thread_function(void *ap){
-    
-    assert(image.size()==3 && filter.size()!=0);
-    long thread_id = (long)ap;
-    
-    int height = image[0].size();
-    int width = image[0][0].size();
-    int filterHeight = filter.size();
-    int filterWidth = filter[0].size();
-    int newImageHeight = height-filterHeight+1;
-    int newImageWidth = width-filterWidth+1;
-    int d,i,j,h,w;
-    
-    int from = (newImageHeight / num_threads)*thread_id;
-    int to = thread_id != num_threads-1 ? from + (newImageHeight / num_threads) : newImageHeight;
-    
-//    cout << "thread " << thread_id << endl;
-    
-//    cout << "Hello world! from thread " << thread_id << endl;
-//    cout << image[0].size() << " x " << image[0][0].size() << endl;
-//    cout << "I go from " << from << " to " << to << endl;
-    
-    for (d=0 ; d<3 ; d++) {
-        for (i=from ; i<to ; i++) {
-            for (j=0 ; j<newImageWidth ; j++) {
-                for (h=i ; h<i+filterHeight ; h++) {
-                    for (w=j ; w<j+filterWidth ; w++) {
-                        newImage[d][i][j] += filter[h-i][w-j]*image[d][h][w];
-                    }
-                }
-            }
-        }
-    }
-
-    pthread_exit(NULL);
-}
-
 int main(int argc, char** argv)
 {
     assert(argc == 5 && "You must specify the input name, output name, number of threads and kernel size as parameters");
-
-//    printf("argc %d",argc);
     
     int kernel;
     num_threads = atoi(argv[3]);
     kernel = atoi(argv[4]);
     
-//    printf("numthreads %d kernel %d",num_threads,kernel);
-    
-    filter = getGaussian(kernel, kernel, 10.0);
     cout << "Loading image..." << endl;
     image = loadImage(argv[1]);
+    cout << "Generating Kernel..." << endl;
+    filter = getGaussian(kernel, kernel, 10.0);
     
     if(image[0].size() < num_threads || image[0][0].size() < num_threads){
         cout << "The size of the image is less than the number of threads you are trying to use\nOnly 1 thread will be used";
@@ -181,33 +142,33 @@ int main(int argc, char** argv)
     }
     
     newImage = Image(3, Matrix(image[0].size() - filter.size() + 1, Array(image[0][0].size() - filter[0].size() + 1)));
-    
-    cout << "Creathing threads..." << endl;
+
     cout << "Applying filter..." << endl;
-    int args[num_threads];
-    pthread_t hilo[num_threads];
-    int i,r,*rv;
-    
-    //thread creation
-    for (i = 0; i < num_threads; i++)
+
+    omp_set_num_threads(num_threads);
+    #pragma omp parallel
     {
-        args[i] = i;
-        r = pthread_create(&hilo[i], NULL, thread_function, (void *)i);
-        if (r != 0)
-        {
-            perror("can't create thread");
-            exit(-1);
-        }
-    }
-    
-    //thread opening
-    for (i = 0; i < num_threads; i++)
-    {
-        r = pthread_join(hilo[i], (void **)&rv);
-        if (r != 0)
-        {
-            perror("can't join thread");
-            exit(-1);
+        assert(image.size()==3 && filter.size()!=0);
+        
+        int height = image[0].size();
+        int width = image[0][0].size();
+        int filterHeight = filter.size();
+        int filterWidth = filter[0].size();
+        int newImageHeight = height-filterHeight+1;
+        int newImageWidth = width-filterWidth+1;
+        int d,i,j,h,w;
+        
+        for (d=0 ; d<3 ; d++) {
+            #pragma omp for collapse(2)
+            for (i= 0; i<newImageHeight ; i++) {
+                for (j=0 ; j<newImageWidth ; j++) {
+                    for (h=i ; h<i+filterHeight ; h++) {
+                        for (w=j ; w<j+filterWidth ; w++) {
+                            newImage[d][i][j] += filter[h-i][w-j]*image[d][h][w];
+                        }
+                    }
+                }
+            }
         }
     }
     
