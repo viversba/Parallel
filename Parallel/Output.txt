@@ -6,9 +6,9 @@ Applying filter...
 Saving image...
 Done!
 
-real	0m13,140s
-user	0m13,094s
-sys	0m0,040s
+real	0m14,029s
+user	0m13,963s
+sys	0m0,028s
 @@@-------------------------------@@@
 2. Caso imagen 720p 2 hilos
 Loading image...
@@ -17,9 +17,9 @@ Applying filter...
 Saving image...
 Done!
 
-real	0m7,149s
-user	0m13,884s
-sys	0m0,032s
+real	0m7,438s
+user	0m14,367s
+sys	0m0,044s
 @@@-------------------------------@@@
 3. Caso imagen 720p 4 hilos
 Loading image...
@@ -28,9 +28,9 @@ Applying filter...
 Saving image...
 Done!
 
-real	0m6,588s
-user	0m23,595s
-sys	0m0,028s
+real	0m7,070s
+user	0m23,392s
+sys	0m0,112s
 @@@-------------------------------@@@
 4. Caso imagen 720p 8 hilos
 Loading image...
@@ -39,9 +39,9 @@ Applying filter...
 Saving image...
 Done!
 
-real	0m6,872s
-user	0m23,515s
-sys	0m0,020s
+real	0m7,205s
+user	0m23,509s
+sys	0m0,135s
 @@@-------------------------------@@@
 5. Caso imagen 720p 16 hilos
 Loading image...
@@ -50,9 +50,9 @@ Applying filter...
 Saving image...
 Done!
 
-real	0m7,127s
-user	0m23,840s
-sys	0m0,070s
+real	0m6,893s
+user	0m23,599s
+sys	0m0,091s
 @@@-------------------------------@@@
 6. Caso imagen 1080p secuencial
 Loading image...
@@ -61,9 +61,9 @@ Applying filter...
 Saving image...
 Done!
 
-real	0m31,476s
-user	0m31,427s
-sys	0m0,040s
+real	0m33,509s
+user	0m33,295s
+sys	0m0,104s
 @@@-------------------------------@@@
 7. Caso imagen 1080p 2 hilos
 Loading image...
@@ -72,9 +72,9 @@ Applying filter...
 Saving image...
 Done!
 
-real	0m18,066s
-user	0m34,351s
-sys	0m0,084s
+real	0m19,093s
+user	0m36,472s
+sys	0m0,196s
 @@@-------------------------------@@@
  8. Caso imagen 1080p 4 hilos
 Loading image...
@@ -83,9 +83,9 @@ Applying filter...
 Saving image...
 Done!
 
-real	0m15,593s
-user	0m53,850s
-sys	0m0,134s
+real	0m16,669s
+user	0m52,931s
+sys	0m0,159s
 @@@-------------------------------@@@
 9. Caso imagen 1080p 8 hilos
 Loading image...
@@ -94,9 +94,9 @@ Applying filter...
 Saving image...
 Done!
 
-real	0m15,855s
-user	0m54,140s
-sys	0m0,079s
+real	0m15,899s
+user	0m53,569s
+sys	0m0,207s
 @@@-------------------------------@@@
 10. Caso imagen 1080p 16 hilos
 Loading image...
@@ -105,9 +105,9 @@ Applying filter...
 Saving image...
 Done!
 
-real	0m15,738s
-user	0m53,808s
-sys	0m0,142s
+real	0m14,778s
+user	0m54,009s
+sys	0m0,100s
 @@@-------------------------------@@@
 11. Caso imagen 4k secuencial
 Loading image...
@@ -116,9 +116,9 @@ Applying filter...
 Saving image...
 Done!
 
-real	1m37,612s
-user	1m37,377s
-sys	0m0,168s
+real	1m29,729s
+user	1m29,604s
+sys	0m0,120s
 @@@-------------------------------@@@
 12. Caso imagen 4k 2 hilos
 Loading image...
@@ -127,9 +127,9 @@ Applying filter...
 Saving image...
 Done!
 
-real	0m53,745s
-user	1m44,435s
-sys	0m0,208s
+real	0m48,904s
+user	1m35,144s
+sys	0m0,180s
 @@@-------------------------------@@@
 13. Caso imagen 4k 4 hilos
 Loading image...
@@ -138,9 +138,9 @@ Applying filter...
 Saving image...
 Done!
 
-real	0m46,847s
-user	2m40,561s
-sys	0m0,452s
+real	0m44,008s
+user	2m40,614s
+sys	0m0,211s
 @@@-------------------------------@@@
 14. Caso imagen 4k 8 hilos
 Loading image...
@@ -149,9 +149,9 @@ Applying filter...
 Saving image...
 Done!
 
-real	0m44,588s
-user	2m41,023s
-sys	0m0,290s
+real	0m43,964s
+user	2m41,397s
+sys	0m0,179s
 @@@-------------------------------@@@
 15. Caso imagen 4k 16 hilos
 Loading image...
@@ -160,7 +160,7 @@ Applying filter...
 Saving image...
 Done!
 
-real	0m48,259s
-user	2m40,414s
-sys	0m0,405s
+real	0m46,900s
+user	2m39,437s
+sys	0m0,388s
 @@@-------FIN DEL PROGRAMA--------@@@
