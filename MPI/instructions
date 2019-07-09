@@ -1,6 +1,6 @@
 Compile with:
 
-mpic++ main1.cpp -o main `libpng-config --ldflags` -pthread
+mpic++ main1.cpp -o main `libpng-config --ldflags`
 
 Run with:
 
@@ -15,3 +15,21 @@ server:2
 
 # The following slave nodes are single processor machines:
 node2:2
+
+From Server:
+
+# On cloud folder
+sudo exportfs -a 
+sudo service nfs-kernel-server restart
+
+Mout folder in each node:
+
+sudo mount -t nfs server:/home/mpiuser/mpi/cloud ~/mpi/cloud/
+
+Add user to sudoers:
+
+sudo adduser <username> sudo
+
+Path of output
+
+/home/mpiuser/mpi/cloud/output.png
