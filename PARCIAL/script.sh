@@ -1,6 +1,7 @@
 #!/bin/bash
-echo "@@@------INICIO DEL PROGRAMA------@@@" &>>  Output.txt 
-echo "1. Caso tamaño 8" &>>  Output.txt 
+gcc mxm_openmp.c -o p2−matrixMult_cpu−omp -fopenmp
+echo "@@@------INICIO DEL PROGRAMA------@@@" & >  Output.txt 
+echo "1. Caso tamaño 8" & >  Output.txt 
 (time ./p2−matrixMult_cpu−omp 8 8)  &>>  Output.txt 
 echo "@@@-------------------------------@@@" &>>  Output.txt 
 echo "2. Caso tamaño 16" &>>  Output.txt 

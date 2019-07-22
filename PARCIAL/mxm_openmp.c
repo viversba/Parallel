@@ -1,37 +1,33 @@
+
+#include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
 #include <omp.h>
+#include <sys/time.h>
 
-int main(int argc, char* argv[]){
-	
-int size = atoi(argv[1]);
-int first[size][size];
-int second[size][size];
-int third[size][size];
-int i,j,k;
-srand(time(NULL));
-for( i=0; i < size; i++){
-	for( j=0; j<size; j++){
-		first[i][j] = rand();
-    second[i][j] = rand();
-  }
-} 
+int main(int argc, char* argv[]) 
+{
+	int tam = atoi(argv[1]);
+	printf("%d",tam);
+	int A[tam][tam];
+	int B[tam][tam];
+	int C[tam][tam];
+    int i,j,k;
+    omp_set_num_threads(omp_get_num_procs());
+    for (i= 0; i< tam; i++)
+        for (j= 0; j< tam; j++)
+	{
+            A[i][j] = 2;
+            B[i][j] = 2;
+	}
+    #pragma omp parallel for private(i,j,k) shared(A,B,C)
+    for (i = 0; i < tam; ++i) {
+        for (j = 0; j < tam; ++j) {
+            for (k = 0; k < tam; ++k) {
+                C[i][j] += A[i][k] * B[k][j];
+            }
+        }
+    }
 
-#pragma omp parallel for private(j,k)
-	for( i=0; i<size; i++ ){
-		for( j=0; j<size; j++ ){
-			for( k=0; k<size; k++){
-				third[i][j] = first[i][j] + first[i][k]*second[k][j];
-			}
-		}
-	}	
-
-for( i=0; i < size; i++){
-	for( j=0; j<size; j++){
-		printf("%d ", third[i][j]);
-  }
-} 
-
-return 0;
 }
+ 
